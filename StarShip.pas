@@ -1,8 +1,9 @@
 ﻿Uses GraphABC;
 Var
 sec, win_x, win_y : Integer;
+info_x, info_y, ship_start_x, ship_start_y, ship_y: Integer;
 start_info, secS: String;
-emptyS, fris, ris: String;
+fship, fbackground: String;
 ship, background : Picture;
 Begin
 
@@ -13,55 +14,71 @@ Writeln('Введите время до старта ракеты, от 1 до 1
 
 if((sec > 0) AND (sec < 10)) then
 begin
+  Writeln('Время до запуска: ', sec, ' секунд(ы)');
+  Writeln('Нажмите Enter (Ввод) для продолжения...');
+  Readln();
+
+  //ClearWindow;
+  
   LockDrawing;
   
   win_x := WindowWidth;
   win_y := WindowHeight;
   
-  //Writeln('Время до запуска: ', sec, ' секунд(ы)');
-  //Writeln('Нажмите Enter (Ввод) для продолжения...');
-  //Readln();
+  fbackground := 'd:\background.jpg';
+  fship := 'd:\moreover-clipart-1.jpg';
   
-  //start_info := 'До запуска осталось: ';
-  //emptyS := '                                              ';
-  //for var i:= sec downto 1 do
-  //begin
-  //  str(i, secS);
-  //  TextOut(10, 100, start_info + secS);
-  //  Sleep(1000);
-  //  TextOut(10, 100, emptyS);
-  //end;
-  
-  //TextOut(10, 100, 'Поехали!!!!');
-  //ClearWindow;
-  //SetPenColor (clred);
-  //Rectangle (0,0,120,400);
-  
-  
-  
-  
-  background := Picture.Create('d:\background.jpg');
-  background.Draw(0,0, win_x, win_y);
-
-  fris := 'd:\moreover-clipart-1.jpg';
-  ship := Picture.Create(fris);
-  ship.Transparent := false;  
-  ship.Draw(10,50, 80,100);
-
-
+  info_x := 400;
+  info_y := 400;
   SetFontSize(20);
   SetFontColor(clDarkRed);
   SetBrushStyle(bsClear);
- 
-  TextOut(50, 400, 'Поехали!!!!');
+      
+  background := Picture.Create(fbackground);
   
-  Redraw;
-  
-  //Writeln('Поехали!!!!');
+  ship := Picture.Create(fship);
+  ship.Transparent := false;
+  ship_start_x := 100;
+  ship_start_y := 500;  
 
+  start_info := 'До запуска осталось: ';
+  
+  for var i:= sec downto 0 do
+  begin  
+    background.Draw(0,0, win_x, win_y);
+    ship.Draw(ship_start_x, ship_start_y, 40, 55);
+        
+    if i = 0 then
+    begin
+      TextOut(info_x, info_y, 'Поехали!!!!');      
+    end
+      else
+    begin
+      str(i, secS);
+      TextOut(info_x, info_y, start_info + secS);        
+    end;
+       
+    Redraw;    
+    Sleep(1000);
+  end;
+
+  ship_y := ship_start_y;
+
+  while ship_y > -55 do
+  begin
+    ship_y := ship_y - 10;
+    
+    background.Draw(0,0, win_x, win_y);  
+    ship.Draw(ship_start_x, ship_y, 40, 55);
+
+    Redraw; 
+    Sleep(100);    
+  end;
+     
+     
+  TextOut(info_x, info_y, 'Запуск прошел успешно!');
+  Redraw;
 end
 else
   Writeln('Время до старта задано не верно. Запуск не возможен.');
-  
-  //Writeln('Выход');
 End.
